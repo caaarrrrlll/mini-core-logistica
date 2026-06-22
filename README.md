@@ -9,7 +9,7 @@ Se implementó el framework **Next.js** en conjunto con **Prisma ORM** y **SQLit
 * **Vista (View):** Construida con React (`app/page.tsx`), presentando un formulario limpio de filtrado de fechas y la tabla de resultados.
 
 ## 📹 Video Explicativo
-[Coloca aquí el link de tu video de Loom o YouTube]
+(https://youtu.be/AhXIy5OKsQ8)](https://youtu.be/AhXIy5OKsQ8)
 
 ## 🚀 Instrucciones para correrlo localmente
 
