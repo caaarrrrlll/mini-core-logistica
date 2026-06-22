@@ -1,65 +1,98 @@
-import Image from "next/image";
+'use client';
+import { useState } from 'react';
+
+type Resultado = {
+  nombre: string;
+  cantidadEnvios: number;
+  totalKg: string;
+  zona: string;
+  tarifa: string;
+  costoTotal: string;
+};
 
 export default function Home() {
+  const [fechaInicio, setFechaInicio] = useState('2025-05-01');
+  const [fechaFin, setFechaFin] = useState('2025-05-31');
+  const [resultados, setResultados] = useState<Resultado[]>([]);
+  const [cargando, setCargando] = useState(false);
+
+  const consultarCostos = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCargando(true);
+    
+    try {
+      const res = await fetch(`/api/calculo?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`);
+      const data = await res.json();
+      setResultados(data);
+    } catch (error) {
+      console.error("Error al consultar", error);
+    } finally {
+      setCargando(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <main className="min-h-screen p-10 bg-gray-50 text-gray-800">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">Sistema de Logística - Mini Core MVC</h1>
+        
+        {/* Formulario (View) */}
+        <form onSubmit={consultarCostos} className="bg-white p-6 rounded-lg shadow-md flex gap-4 items-end mb-8">
+          <div className="flex-1">
+            <label className="block text-sm font-medium mb-1">Fecha Inicio</label>
+            <input 
+              type="date" 
+              value={fechaInicio} 
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className="w-full border p-2 rounded"
+              required
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-medium mb-1">Fecha Fin</label>
+            <input 
+              type="date" 
+              value={fechaFin} 
+              onChange={(e) => setFechaFin(e.target.value)}
+              className="w-full border p-2 rounded"
+              required
+            />
+          </div>
+          <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+            {cargando ? 'Calculando...' : 'Filtrar'}
+          </button>
+        </form>
+
+        {/* Tabla de Resultados (View) */}
+        {resultados.length > 0 && (
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="p-4 border-b">Repartidor</th>
+                  <th className="p-4 border-b">Envíos</th>
+                  <th className="p-4 border-b">Total kg</th>
+                  <th className="p-4 border-b">Zona</th>
+                  <th className="p-4 border-b">Tarifa/kg</th>
+                  <th className="p-4 border-b text-right">Costo Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {resultados.map((rep, index) => (
+                  <tr key={index} className="hover:bg-gray-50">
+                    <td className="p-4 border-b font-medium">{rep.nombre}</td>
+                    <td className="p-4 border-b">{rep.cantidadEnvios}</td>
+                    <td className="p-4 border-b">{rep.totalKg}</td>
+                    <td className="p-4 border-b">{rep.zona}</td>
+                    <td className="p-4 border-b">{rep.tarifa}</td>
+                    <td className="p-4 border-b text-right font-bold text-green-600">{rep.costoTotal}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

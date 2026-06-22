@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Repartidor {
+  id_repartidor Int     @id @default(autoincrement())
+  nombre        String
+  email         String?
+  envios        Envio[]
+}
+
+model Zona {
+  id_zona       Int     @id @default(autoincrement())
+  nombre_zona   String
+  tarifa_por_kg Float
+  envios        Envio[]
+}
+
+model Envio {
+  id_envio      Int      @id @default(autoincrement())
+  id_repartidor Int
+  id_zona       Int
+  peso_kg       Float
+  fecha_envio   DateTime
+  
+  repartidor    Repartidor @relation(fields: [id_repartidor], references: [id_repartidor])
+  zona          Zona       @relation(fields: [id_zona], references: [id_zona])
+}

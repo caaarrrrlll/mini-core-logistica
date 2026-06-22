@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sistema de Logística - Mini Core MVC
 
-## Getting Started
+Este proyecto es una pequeña aplicación funcional (Mini Core) que resuelve un problema de logística: calcular el costo total de envíos por repartidor dentro de un rango de fechas. El sistema filtra los registros exclusivamente por **Fecha de Inicio** y **Fecha Fin**, calculando el total según la tarifa de la zona de entrega.
 
-First, run the development server:
+## Patrón MVC Utilizado
+Se implementó el framework **Next.js** en conjunto con **Prisma ORM** y **SQLite** para cumplir con la arquitectura Modelo-Vista-Controlador (MVC):
+* **Modelo (Model):** Definido en `prisma/schema.prisma` y gestionado mediante Prisma Client contra una base de datos local SQLite.
+* **Controlador (Controller):** Implementado en un Route Handler de Next.js (`app/api/calculo/route.ts`), encargado de recibir los parámetros de fecha, consultar al modelo y procesar la lógica matemática.
+* **Vista (View):** Construida con React (`app/page.tsx`), presentando un formulario limpio de filtrado de fechas y la tabla de resultados.
 
-```bash
+## 📹 Video Explicativo
+[Coloca aquí el link de tu video de Loom o YouTube]
+
+## 🚀 Instrucciones para correrlo localmente
+
+1. Clonar este repositorio:
+   ```bash
+   git clone [https://github.com/caaarrrrlll/mini-core-logistica.git](https://github.com/caaarrrrlll/mini-core-logistica.git)
+
+   Instalar las dependencias:
+
+Bash
+npm install
+Generar el cliente de Prisma:
+
+Bash
+npx prisma generate
+Iniciar el servidor de desarrollo:
+
+Bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
